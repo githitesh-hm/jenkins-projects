@@ -1,0 +1,116 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Create website directories and Add index.html file') {
+            steps {
+                script{
+                    sh '''
+                    sudo mkdir -p /var/www/site1 /var/www/site2 /var/www/site3 /var/www/site4
+                    
+                    echo "Welcome to Site 1" | sudo tee /var/www/site1/index.html
+                    echo "Welcome to Site 2" | sudo tee /var/www/site2/index.html
+                    echo "Welcome to Site 3" | sudo tee /var/www/site3/index.html
+                    echo "Welcome to Site 4" | sudo tee /var/www/site4/index.html
+                    
+                    '''
+                    
+                }
+            }
+        }
+         stage('set permission') {
+            steps {
+                script{
+                    sh '''
+                    sudo chown -R www-data:www-data /var/www/site1 /var/www/site2 /var/www/site3 /var/www/site4
+                    sudo chmod -R 755 /var/www
+                    
+                    '''
+                    
+                }
+            }
+        }
+        stage('Configure Apache to Listen on Ports') {
+            steps {
+                script {
+                    // Update Apache to listen on specified ports
+                    sh 'echo "Listen 8081\nListen 8082\nListen 8083\nListen 8084" | sudo tee -a /etc/apache2/ports.conf'
+                }
+            }
+        }
+        stage('Configure vertual host file') {
+            steps {
+                script {
+                   sh '''
+                echo '<VirtualHost *:8081>
+                       DocumentRoot /var/www/site1
+                       <Directory /var/www/site1>
+                         Options Indexes FollowSymLinks
+                         AllowOverride All
+                         Require all granted
+                     </Directory>
+                   </VirtualHost>' | sudo tee /etc/apache2/sites-available/site1.conf
+                   
+                   echo '<VirtualHost *:8082>
+                       DocumentRoot /var/www/site2
+                       <Directory /var/www/site2>
+                         Options Indexes FollowSymLinks
+                         AllowOverride All
+                         Require all granted
+                     </Directory>
+                   </VirtualHost>' | sudo tee /etc/apache2/sites-available/site2.conf
+                   
+                   echo '<VirtualHost *:8083>
+                       DocumentRoot /var/www/site3
+                       <Directory /var/www/site3>
+                         Options Indexes FollowSymLinks
+                         AllowOverride All
+                         Require all granted
+                     </Directory>
+                   </VirtualHost>' | sudo tee /etc/apache2/sites-available/site3.conf
+                   
+                   echo '<VirtualHost *:8084>
+                       DocumentRoot /var/www/site4
+                       <Directory /var/www/site4>
+                         Options Indexes FollowSymLinks
+                         AllowOverride All
+                         Require all granted
+                     </Directory>
+                   </VirtualHost>' | sudo tee /etc/apache2/sites-available/site4.conf
+                   
+                   #Enable the sites
+                   sudo a2ensite site1.conf site2.conf site3.conf site4.conf
+                   
+                   #Reload apache
+                   
+                   sudo systemctl restart apache2
+                   
+                   '''
+                    
+                }
+            }
+        }
+        stage('Configure Firewall') {
+            steps {
+                script {
+                   sh '''
+                   sudo ufw allow 8081
+                   sudo ufw allow 8082
+                   sudo ufw allow 8083
+                   sudo ufw allow 8084
+                   sudo ufw reload
+                   '''
+                }
+            }
+        }
+
+
+
+    }
+     post {
+        always {
+            echo 'Pipeline completed successfully!'
+        }
+    }
+}
+
