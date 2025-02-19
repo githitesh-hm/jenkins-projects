@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('set up apache and AWScli') {
+            steps {
+                script{
+                    sh '''
+                    sudo apt-get update -y
+                    sudo apt install apache2 -y
+                    sudo systemctl enable apache2 
+                    sudo systemctl start apache2
+                    
+                    #install awscli
+                    
+                   #sudo apt-get install awscli -y
+                    
+                    '''
+                    
+                }
+                
+            }
+        }
+        stage('Download apache2.conf file from s3') {
+            steps {
+                script{
+                    sh '''
+                    
+                 sudo aws s3 cp s3://hiteshbucket0607/apache2.conf /etc/apache2/apache2.conf
+                  
+                  #Restart apache2.service
+                  sudo systemctl restart apache2.service
+  
+                    '''
+                }
+            }
+        }
+        stage('Add simple html file') {
+            steps {
+                script{
+                    sh '''
+                     echo "<h1>Welcome to the web service!!!</h1>" | sudo tee /var/www/html/index.html
+                    '''
+                    
+                }
+                
+            }
+        }
+
+
+    }
+}
