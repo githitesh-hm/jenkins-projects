@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+    
+
+    stages {
+        stage('create directories') {
+            steps {
+                script{
+                    sh '''
+                    sudo mkdir -p /var/www/site1 /var/www/site2 /var/www/site3 /var/www/site4
+                     echo "<h1>Welcome to Site 1</h1>" | sudo tee /var/www/site1/index.html
+                     echo " <h1>Welcome to Site 1</h1>" | sudo tee /var/www/site2/index.html
+                     echo  "<h1>Welcome to Site 1</h1>" | sudo tee /var/www/site3/index.html
+                     echo  " <h1>Welcome to Site 1</h1>" | sudo tee /var/www/site4/index.html
+                    '''
+                }
+               
+            }
+        }
+        
+        stage('configure vertual host '){
+            steps{
+                script{
+                    sh '''
+                     echo '<VirtualHost *:80>
+                            ServerName site1.example.com
+                            DocumentRoot /var/www/site1
+                        </VirtualHost>' | sudo tee /etc/apache2/sites-available/site1.conf
+                        
+                     echo '<VirtualHost *:80>
+                            ServerName site2.example.com
+                            DocumentRoot /var/www/site2
+                        </VirtualHost>' | sudo tee /etc/apache2/sites-available/site2.conf   
+                        
+                     echo '<VirtualHost *:80>
+                            ServerName site3.example.com
+                            DocumentRoot /var/www/site3
+                        </VirtualHost>' | sudo tee /etc/apache2/sites-available/site3.conf
+                        
+                         echo '<VirtualHost *:80>
+                            ServerName site4.example.com
+                            DocumentRoot /var/www/site4
+                        </VirtualHost>' | sudo tee /etc/apache2/sites-available/site4.conf
+                        
+                        sudo a2ensite site1.conf site2.conf site3.conf site4.conf
+                '''
+                }
+            }
+        }
+        
+        stage(' Reload apache to Apply changes') {
+            steps {
+                script{
+                    sh '''
+                    sudo systemctl reload apache2
+                    '''
+                }
+               
+            }
+        }
+        
+    }
+    post{
+        success{
+            echo "All vertual hosts are Configured successfully!"
+        }
+        failure{
+            echo "Failed to host one or more hosts"
+        }
+    }
+}
+
