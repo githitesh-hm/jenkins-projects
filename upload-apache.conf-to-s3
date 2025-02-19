@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('upload configuration') {
+            steps {
+               script{
+                   sh '''
+                    
+                    sudo cp ./apache2.conf /etc/apache2/apache2.conf
+                    aws s3 cp ./apache2.conf s3://hiteshbucket0607/
+                   
+                   '''
+               }
+            }
+        }
+        stage('Download Configuration') {
+            steps {
+               script{
+                   sh '''
+                    
+                   sudo wget https://hiteshbucket0607.s3.amazonaws.com/apache2.conf -O /etc/apache2/apache2.conf
+                    sudo systemctl restart apache2.service
+                   
+                   '''
+               }
+            }
+        }
+    }
+}
