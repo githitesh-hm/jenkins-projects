@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Install apache server') {
+            steps {
+                script{
+                    sh '''
+                    
+                    sudo apt update -y
+                    sudo apt install apache2 -y
+                    sudo systemctl start apache2
+                    sudo systemctl enable apache2
+                    
+                    '''
+                }
+            }
+        }
+        stage('Download configuration  file') {
+            steps {
+                script{
+                    sh '''
+                    
+                    aws s3 cp s3://hiteshbucket0607/apache2.conf ./httpd.conf
+                    
+                    #Replace default configuration
+                    sudo cp ./httpd.conf /etc/apache2/apache2.conf
+                    
+                    '''
+                }
+                
+            }
+        }
+        stage('Restart apache') {
+            steps {
+                script{
+                    sh '''
+                    
+                    sudo systemctl restart apache2.service
+                    
+                    '''
+                }
+                
+            }
+        }
+
+
+    }
+}
