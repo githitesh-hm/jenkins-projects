@@ -21,7 +21,7 @@ pipeline {
                 script{
                     sh '''
                     
-                    aws s3 cp s3://hiteshbucket0607/apache2.conf ./httpd.conf
+                   sudo aws s3 cp s3://hiteshbucket0607/apache2.conf ./httpd.conf
                     
                     #Replace default configuration
                     sudo cp ./httpd.conf /etc/apache2/apache2.conf
