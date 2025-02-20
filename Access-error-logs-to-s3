@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    stages {
+        stage('Deploy Web Service') {
+            steps {
+                sh '''
+                sudo apt update
+                sudo apt install apache2 -y
+                sudo systemctl start apache2
+                sudo systemctl enable apache2
+                '''
+            }
+        }
+        stage('Upload Logs to S3') {
+            steps {
+                sh '''
+                
+                sudo chmod +x /usr/local/bin/log_upload.sh
+
+                
+               #run saved script to upload logs
+               
+               sudo bash /usr/local/bin/log_upload.sh
+                
+               
+                 '''
+                
+            }
+        }
+        stage('set the cron job') {
+            steps {
+              script{
+                  sh '''
+                  
+                     echo "*/2 * * * * /usr/local/bin/upload_logs.sh" | crontab -
+
+                     '''
+                    }
+                
+            }
+        }
+    }
+}
