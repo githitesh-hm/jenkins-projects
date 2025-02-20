@@ -38,7 +38,7 @@ pipeline {
                 }
             }
         }
-        stage('Configure vertual host file') {
+        stage('Configure virtual host file') {
             steps {
                 script {
                    sh '''
