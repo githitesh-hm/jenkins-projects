@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('prepare backup environment') {
+            steps {
+                script{
+                    
+                    //ensure backup dir exists
+                    sh 'sudo mkdir -p /backup/config_backup'
+                    
+                }
+                
+            }
+        }
+        stage('Execute backup script') {
+            steps {
+              script{
+                  sh '''
+                    sudo bash /home/ubuntu/backup_script.sh
+                     '''
+                }
+            }
+        }
+       
+
+
+    }
+    post {
+        always {
+            
+            echo "Backup process completed."
+        }
+    }
+}
