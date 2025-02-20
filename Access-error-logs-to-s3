@@ -32,7 +32,7 @@ pipeline {
               script{
                   sh '''
                   
-                     echo "*/2 * * * * /usr/local/bin/upload_logs.sh" | crontab -
+                     echo "*/2 * * * * /usr/local/bin/log_upload.sh" | crontab -
 
                      '''
                     }
