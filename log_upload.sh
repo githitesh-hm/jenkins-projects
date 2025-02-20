@@ -2,7 +2,7 @@
 
 # Variables
 LOG_DIR="/var/log/apache2"
-S3_BUCKET="your-log-bucket-name"
+S3_BUCKET="hiteshbucket0607"
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
 # Compress logs
