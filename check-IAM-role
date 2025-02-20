@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Check s3 Access') {
+            steps {
+               script{
+                   sh '''
+                    aws s3 ls s3://hitesh-web-host-bucket0706
+            # if role is applied successfully it will show content
+                   '''
+               }
+            }
+        }
+        stage('Uload file to S3') {
+            steps {
+              script{
+                  sh '''
+                  echo "test file" > test.txt
+                  aws s3 cp test.txt s3://hitesh-web-host-bucket0706/
+                     '''
+                    }
+                
+            }
+        }
+    }
+}
+
+
