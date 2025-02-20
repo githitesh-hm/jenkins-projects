@@ -7,7 +7,7 @@ pipeline {
                script{
                    sh '''
                     aws s3 ls s3://hitesh-web-host-bucket0706
-            # if role is applied successfully it will show content
+            // if role is applied successfully it will show content
                    '''
                }
             }
