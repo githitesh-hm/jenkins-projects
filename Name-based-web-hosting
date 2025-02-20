@@ -9,9 +9,9 @@ pipeline {
                     sh '''
                     sudo mkdir -p /var/www/site1 /var/www/site2 /var/www/site3 /var/www/site4
                      echo "<h1>Welcome to Site 1</h1>" | sudo tee /var/www/site1/index.html
-                     echo " <h1>Welcome to Site 1</h1>" | sudo tee /var/www/site2/index.html
-                     echo  "<h1>Welcome to Site 1</h1>" | sudo tee /var/www/site3/index.html
-                     echo  " <h1>Welcome to Site 1</h1>" | sudo tee /var/www/site4/index.html
+                     echo " <h1>Welcome to Site 2</h1>" | sudo tee /var/www/site2/index.html
+                     echo  "<h1>Welcome to Site 3</h1>" | sudo tee /var/www/site3/index.html
+                     echo  " <h1>Welcome to Site 4</h1>" | sudo tee /var/www/site4/index.html
                     '''
                 }
                
